@@ -560,6 +560,20 @@ def main() -> None:
         start_epoch = ckpt.get("epoch", 0)
         best_ap50 = ckpt.get("best_ap50", -1.0)
         best_loss = ckpt.get("best_loss", float("inf"))
+        resumed_base_lrs = list(getattr(scheduler, "base_lrs", []))
+        resumed_lrs = [pg.get("lr", args.lr) for pg in optimizer.param_groups]
+        if resumed_base_lrs and any(not math.isclose(base_lr, args.lr, rel_tol=0.0, abs_tol=1e-12) for base_lr in resumed_base_lrs):
+            scaled_lrs = []
+            for lr, base_lr in zip(resumed_lrs, resumed_base_lrs):
+                factor = lr / base_lr if base_lr > 0 else 1.0
+                scaled_lrs.append(args.lr * factor)
+            for pg, new_lr in zip(optimizer.param_groups, scaled_lrs):
+                pg["initial_lr"] = args.lr
+                pg["lr"] = new_lr
+            scheduler.base_lrs = [args.lr for _ in optimizer.param_groups]
+            if hasattr(scheduler, "_last_lr"):
+                scheduler._last_lr = [pg["lr"] for pg in optimizer.param_groups]
+            print(f"Overriding resumed LR schedule to base lr={args.lr:.2e}")
         if not math.isfinite(best_loss) or best_loss <= 0.0:
             print(f"Ignoring invalid best_loss={best_loss:.4f} from checkpoint")
             best_loss = float("inf")
@@ -577,6 +591,20 @@ def main() -> None:
             losses = train_one_epoch(
                 model, ema, optimizer, train_loader, device, scaler, config.GRAD_CLIP,
             )
+            updates = int(losses.get("_updates", 0.0))
+            skipped_nonfinite = int(losses.get("_skipped_nonfinite", 0.0))
+            attempted_batches = updates + skipped_nonfinite
+            if updates == 0:
+                tqdm.write("Stopping: epoch produced no finite updates; training has diverged.")
+                tqdm.write("Resume from an earlier checkpoint with a lower LR, e.g. epoch_40.pt and --lr 5e-5.")
+                break
+            if attempted_batches > 0 and skipped_nonfinite / attempted_batches > 0.5:
+                tqdm.write(
+                    f"Stopping: skipped_nonfinite={skipped_nonfinite}/{attempted_batches}; "
+                    "training is numerically unstable."
+                )
+                tqdm.write("Resume from an earlier checkpoint with a lower LR, e.g. epoch_40.pt and --lr 5e-5.")
+                break
             scheduler.step()
             elapsed = time.time() - t0
 

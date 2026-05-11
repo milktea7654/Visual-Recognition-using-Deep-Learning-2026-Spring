@@ -97,18 +97,18 @@ MASK_HEAD_LAYERS = 6
 # ---------------------------------------------------------------------------
 
 EPOCHS = 300
-BATCH_SIZE = 4
+BATCH_SIZE = 2
 NUM_WORKERS = 8
 USE_AMP = True
 
 OPTIMIZER = "AdamW"
-LR = 2e-4          # 1e-3 causes divergence for ConvNeXt + Mask R-CNN
+LR = 4e-5          # scaled for batch=1; 8e-4 is too aggressive and diverges
 WEIGHT_DECAY = 1e-4
 GRAD_CLIP = 1.0    # tighter clip to prevent box/objectness loss explosion
 
 # Cosine LR with linear warmup
 SCHEDULER = "CosineAnnealingLR"
-WARMUP_EPOCHS = 5
+WARMUP_EPOCHS = 8
 WARMUP_FACTOR = 0.01
 LR_MIN = 1e-6
 
@@ -135,7 +135,7 @@ EARLY_STOP_PATIENCE = 50    # stop if AP50 does not improve for N epochs
 # Full-train mode: use all 209 images (no val split), save every N epochs.
 # Best for final submission – no val feedback but more training data.
 USE_FULL_TRAIN = True
-SW_EVAL_EVERY = 100   # sliding-window val every N epochs (0=disabled); only when not USE_FULL_TRAIN
+SW_EVAL_EVERY = 5   # sliding-window val every N epochs (0=disabled); only when not USE_FULL_TRAIN
 
 # ---------------------------------------------------------------------------
 # Inference
