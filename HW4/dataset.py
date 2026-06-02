@@ -255,13 +255,14 @@ class RainSnowTrainDataset(Dataset):
             "degraded": degraded,
             "clean": clean,
             "label": torch.tensor(item.label, dtype=torch.long),
+            "index": torch.tensor(index, dtype=torch.long),
             "filename": item.filename,
         }
 
 
 class RainSnowTestDataset(Dataset):
     def __init__(self, root: str | Path) -> None:
-        degraded_dir = Path(root) / "test" / "degraded"
+        degraded_dir = Path(root) / "degraded"
         if not degraded_dir.is_dir():
             raise FileNotFoundError(f"Missing test degraded directory: {degraded_dir}")
         self.paths = sorted(

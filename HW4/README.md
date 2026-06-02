@@ -1,103 +1,150 @@
-# HW4 Configurable PromptIR Framework
+# NYCU Computer Vision 2026 HW4
 
-This version is organized around YAML configs and dynamic model loading.
+- **Student ID:** 112550200
+- **Name:** Zheng Wu Qian
 
-## Structure
+## Introduction
+
+This repository contains my implementation for NYCU Computer Vision 2026 HW4:
+image restoration for rain and snow degradation.
+
+The assignment requires a single PromptIR-based model that restores both rain
+and snow images. No external data or pretrained weights are used. The final
+model is a PromptIR-NAF-MSFN restoration network:
+
+- PromptIR-style feature-aware prompt routing for all-in-one degradation
+  conditioning.
+- NAF-style encoder-decoder restoration backbone for efficient low-level image
+  reconstruction.
+- MSFN adapters at latent, decoder, and refinement stages for mixed-scale
+  rain/snow feature modeling.
+- Residual image prediction: the network predicts a correction and adds it to
+  the degraded input image.
+
+The final model and config files are intentionally kept compact:
 
 ```text
-train.py
-inference.py
-dataset.py
-configs/
-  train.yaml
-  inference.yaml
-  data.yaml
-  promptir_cplfreq.yaml
-models/
-  __init__.py
-  promptir_cplfreq.py
-tools/
-  check_pred_npz.py
+model/best.py
+configs/best.yaml
+configs/dataset.yaml
+configs/train.yaml
+configs/inference.yaml
 ```
 
-Training outputs are saved as:
+## Environment Setup
+
+Python 3.9 or later is recommended. Install the required packages with:
+
+```bash
+pip install -r requirements.txt
+```
+
+Main dependencies:
 
 ```text
-outputs/
-  YYYYMMDD_HHMMSS/
-    checkpoints/
-      best.pt
-      last.pt
-      epoch_0010.pt
-    logs/
-      events.out.tfevents.*
-    config_resolved.yaml
+torch
+torchvision
+numpy
+Pillow
+tqdm
+PyYAML
+tensorboard
 ```
 
-## Train
+Dataset layout expected by the code:
+
+```text
+data/
+  train/
+    degraded/
+      rain-1.png
+      ...
+      snow-1600.png
+    clean/
+      rain_clean-1.png
+      ...
+      snow_clean-1600.png
+  degraded/
+    0.png
+    ...
+    99.png
+```
+
+## Usage
+
+### Training
+
+Train the final model from scratch:
 
 ```bash
 python train.py --config configs/train.yaml
 ```
 
-Override paths or settings from CLI:
+Training outputs are saved under a timestamp-only directory:
 
-```bash
-python train.py \
-  --config configs/train.yaml \
-  --data_root /kaggle/input/hw4-realse-dataset/hw4_realse_dataset \
-  --run_name promptir_cplfreq \
-  --set train.epochs=400 \
-  --set checkpoint.save_every=5 \
-  --set model.dim=64
+```text
+output/YYYYMMDD_HHMMSS/
+  checkpoints/
+    best.pt
+    last.pt
+  logs/
+  visuals/
+  config_resolved.yaml
 ```
 
-Open TensorBoard:
+The default training config uses:
 
-```bash
-tensorboard --logdir outputs
+```text
+epochs: 420
+batch_size: 8
+crop_size: 128
+EMA decay: 0.999
+model parameters: approximately 58.72M
 ```
 
-## Inference
+### Inference
+
+Generate the final CodaBench submission:
+
+```bash
+python inference.py --config configs/inference.yaml
+```
+
+The default inference config uses:
+
+```text
+checkpoint: output/20260601_224150_github_msfn_custom/checkpoints/best.pt
+TTA: 2-way gravity-aware horizontal flip
+tile: 128
+overlap: 32
+```
+
+It writes:
+
+```text
+output/Best_pred.npz
+output/Best_pred.zip
+```
+
+The zip file contains `pred.npz` at the root, as required by the submission
+format.
+
+To use another checkpoint:
 
 ```bash
 python inference.py \
   --config configs/inference.yaml \
-  --data_root /kaggle/input/hw4-realse-dataset/hw4_realse_dataset \
-  --checkpoint outputs/YYYYMMDD_HHMMSS/checkpoints/best.pt
+  --checkpoint output/YYYYMMDD_HHMMSS/checkpoints/best.pt
 ```
 
-Validate:
+To use another dataset path:
 
 ```bash
-python tools/check_pred_npz.py outputs/pred.npz
+python inference.py \
+  --config configs/inference.yaml \
+  --data_root /path/to/hw4/data
 ```
 
-## Add a new architecture
+## Performance Snapshot
 
-Create:
-
-```text
-models/my_model.py
-configs/my_model.yaml
-```
-
-`models/my_model.py` must expose:
-
-```python
-def build_model(cfg):
-    return MyModel(...)
-```
-
-Then set in the YAML:
-
-```yaml
-model:
-  name: my_model
-```
-
-And train with:
-
-```bash
-python train.py --config configs/train.yaml --set model.name=my_model
-```
+![Leaderboard Snapshot](leaderboard.png)
