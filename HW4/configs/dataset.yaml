@@ -1,0 +1,23 @@
+data:
+  root: data
+  crop_size: 128
+  val_ratio: 0.05
+  num_workers: 8
+  prefetch_factor: 4
+  pin_memory: true
+  persistent_workers: true
+  samples_per_epoch: 0
+  augment:
+    enabled: true
+    random_crop: true
+    hflip: {enabled: true, p: 0.5}
+    vflip: {enabled: false, p: 0.0}
+    transpose: {enabled: false, p: 0.0}
+    rot90: {enabled: false, p: 0.0}
+    paired_color_jitter: {enabled: false, p: 0.0}
+    paired_gamma: {enabled: false, p: 0.0}
+    cutblur_clean_to_degraded: {enabled: false, p: 0.0}
+    degraded_gaussian_noise: {enabled: false, p: 0.0}
+    degraded_jpeg: {enabled: false, p: 0.0}
+    degradation_copy_paste: {enabled: false, p: 0.0}
+    same_label_mixup: {enabled: false, p: 0.0}

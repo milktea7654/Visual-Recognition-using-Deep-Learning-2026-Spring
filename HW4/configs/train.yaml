@@ -1,0 +1,119 @@
+include:
+  - best.yaml
+  - dataset.yaml
+
+project:
+  output_root: output
+  run_name: ""
+  seed: 3407
+
+train:
+  epochs: 420
+  batch_size: 8
+  accum_steps: 1
+  lr: 0.00018
+  warmup_epochs: 12
+  warmup_lr: 0.00002
+  min_lr: 0.000001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: true
+  ema_decay: 0.999
+  resume: ""
+  strict_resume: true
+  freeze_backbone_epochs: 0
+
+  progressive_stages:
+    - until_epoch: 50
+      crop_size: 128
+      batch_size: 8
+      accum_steps: 1
+      loss:
+        reconstruction: charbonnier
+        lambda_ssim: 0.04
+        lambda_fft: 0.015
+        lambda_task: 0.0
+        lambda_deep_supervision: 0.0
+        lambda_laplacian_detail: 0.0
+        lambda_rain_detail: 0.0
+        lambda_rain_delta: 0.0
+        lambda_edge: 0.0
+        lambda_phase: 0.0
+
+    - until_epoch: 260
+      crop_size: 128
+      batch_size: 8
+      accum_steps: 1
+      loss:
+        reconstruction: charbonnier
+        lambda_ssim: 0.0
+        lambda_fft: 0.01
+        lambda_task: 0.0
+        lambda_deep_supervision: 0.0
+        lambda_laplacian_detail: 0.0
+        lambda_rain_detail: 0.0
+        lambda_rain_delta: 0.0
+        lambda_edge: 0.0
+        lambda_phase: 0.0
+
+    - until_epoch: 340
+      crop_size: 128
+      batch_size: 8
+      accum_steps: 1
+      lr: 0.00003
+      loss:
+        reconstruction: charbonnier
+        lambda_ssim: 0.0
+        lambda_fft: 0.0
+        lambda_task: 0.0
+        lambda_deep_supervision: 0.0
+        lambda_laplacian_detail: 0.0
+        lambda_rain_detail: 0.0
+        lambda_rain_delta: 0.0
+        lambda_edge: 0.0
+        lambda_phase: 0.0
+      data:
+        augment:
+          enabled: false
+
+    - until_epoch: 420
+      crop_size: 128
+      batch_size: 8
+      accum_steps: 1
+      lr: 0.00001
+      loss:
+        reconstruction: mse
+        lambda_ssim: 0.0
+        lambda_fft: 0.0
+        lambda_task: 0.0
+        lambda_deep_supervision: 0.0
+        lambda_laplacian_detail: 0.0
+        lambda_rain_detail: 0.0
+        lambda_rain_delta: 0.0
+        lambda_edge: 0.0
+        lambda_phase: 0.0
+      data:
+        augment:
+          enabled: false
+
+validation:
+  every: 1
+  tile: 256
+  overlap: 48
+  max_images: 0
+  validate_ema: true
+  validate_model: false
+  save_visuals: true
+  visuals_every: 20
+  visuals_max_items: 4
+  log_images_every: 20
+
+checkpoint:
+  save_best: true
+  save_last: true
+  save_every: 10
+  save_recent_k: 8
+
+logging:
+  tensorboard: true
+  print_every: 20

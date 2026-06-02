@@ -1,0 +1,47 @@
+# Final selected PromptIR-NAF + MSFN model.
+model:
+  name: best
+  inp_channels: 3
+  out_channels: 3
+
+  dim: 72
+  num_blocks: [6, 8, 10, 12]
+  num_refinement_blocks: 8
+  dw_expand: 2
+  ffn_expand: 2
+  drop_path: 0.0
+  dropout: 0.0
+
+  prompt_len: 5
+  num_prompts: 5
+  prompt_top_k: 2
+  prompt_dims: [72, 144, 432]
+  prompt_sizes: [64, 32, 16]
+  prompt_strength: 0.10
+  decoder_prompt: true
+
+  msfn_stages:
+    - latent
+    - decoder_level3
+    - decoder_level2
+    - refinement
+  msfn_blocks: 1
+  msfn_expansion: 2.0
+
+loss:
+  reconstruction: charbonnier
+  clamp_pred: false
+  rain_reconstruction_weight: 1.0
+  lambda_task: 0.0
+  lambda_deep_supervision: 0.0
+  lambda_laplacian_detail: 0.0
+  lambda_rain_detail: 0.0
+  lambda_rain_delta: 0.0
+  lambda_detail_stage: 0.0
+  lambda_edge: 0.0
+  lambda_fft: 0.0
+  lambda_ssim: 0.0
+  lambda_chroma: 0.0
+  lambda_identity: 0.0
+  lambda_mask: 0.0
+  lambda_phase: 0.0

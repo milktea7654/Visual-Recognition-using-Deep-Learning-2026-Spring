@@ -1,0 +1,21 @@
+include:
+  - best.yaml
+  - dataset.yaml
+
+project:
+  seed: 3407
+
+inference:
+  checkpoint: output/20260601_224150_github_msfn_custom/checkpoints/best.pt
+  checkpoints: []
+  use_ema: true
+  batch_size: 1
+  num_workers: 2
+  tile: 128
+  overlap: 32
+  tta: true
+  tta_mode: gravity
+  tta_scales: [1.0]
+  tta_scale_weights: [1.0]
+  output_npz: output/Best_pred.npz
+  output_zip: output/Best_pred.zip
