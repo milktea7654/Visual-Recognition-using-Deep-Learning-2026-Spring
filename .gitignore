@@ -30,7 +30,10 @@ build/
 # Large files
 *.zip
 *.tar.gz
-
+*.codex
+.agents
+**/kaggle_deps
+**/reports
 # Generated files
 **/prediction*.csv
 **/validation_errors.csv
