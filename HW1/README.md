@@ -150,12 +150,12 @@ All training parameters are centralized in `config.py`:
 ### Training Visualization
 
 #### Accuracy Curves
-![Training Accuracy](Train_acc.png)
-![Validation Accuracy](Val_acc.png)
+![Training Accuracy](assets/Train_acc.png)
+![Validation Accuracy](assets/Val_acc.png)
 
 #### Loss Curves
-![Training Loss](Train_loss.png)
-![Validation Loss](Val_loss.png)
+![Training Loss](assets/Train_loss.png)
+![Validation Loss](assets/Val_loss.png)
 
 ### Validation Metrics (Latest Training Run)
 - **Validation Accuracy:** ~91.67%

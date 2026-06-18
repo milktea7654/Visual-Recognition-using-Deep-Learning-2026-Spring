@@ -38,4 +38,4 @@ python inference.py --checkpoint output/<run>/checkpoints/best.pt
 
 ## Performance Snapshot
 
-![Leaderboard Snapshot](leaderboard.png)
+![Leaderboard Snapshot](assets/leaderboard.png)

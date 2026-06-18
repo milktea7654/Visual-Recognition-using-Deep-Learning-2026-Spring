@@ -32,4 +32,4 @@ python inference.py --checkpoint output/20260421_015205/best.pth --batch_size 8
 
 ## Performance Snapshot
 
-![Leaderboard Snapshot](leaderboard.png)
+![Leaderboard Snapshot](assets/leaderboard.png)

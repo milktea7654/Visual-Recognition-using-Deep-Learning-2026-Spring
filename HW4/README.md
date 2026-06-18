@@ -147,4 +147,4 @@ python inference.py \
 
 ## Performance Snapshot
 
-![Leaderboard Snapshot](leaderboard.png)
+![Leaderboard Snapshot](assets/leaderboard.png)
