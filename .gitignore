@@ -32,9 +32,6 @@ Thumbs.db
 .agents/
 .codex/
 
-# Separate repositories kept outside this HW repo
-final-project-submit/
-
 # Datasets and external dependencies
 **/data/
 **/kaggle_deps/
