@@ -1,48 +1,68 @@
-# Python
+# Byte-compiled files
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
+
+# Python build and packaging
 .Python
+*.egg-info/
+build/
+dist/
+*.so
+
+# Virtual environments
+.env
+.venv/
 env/
 venv/
 ENV/
-*.egg-info/
-dist/
-build/
 
-# IDE
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Data and Models
-**/checkpoints/
-**/models/*
-**/*.pth           # PyTorch model files
-**/logs/
-**/runs/
-**/pretrained_cache/
-**/output/
-**/*.pt
-# Large files
-*.zip
-*.tar.gz
-*.codex
-.agents
-**/kaggle_deps
-**/reports
-# Generated files
-**/prediction*.csv
-**/validation_errors.csv
-**/class_accuracy.csv
-**/*.json
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Data directories (too large to push)
-**/data/
+# Local Codex/agent files
+.agents/
+.codex/
+
+# Separate repositories kept outside this HW repo
 final-project/
+final-project-submit/
+
+# Datasets and external dependencies
+**/data/
+**/kaggle_deps/
+**/pretrained_cache/
+
+# Training outputs and reports
+**/checkpoints/
+**/logs/
+**/models/
+**/output/
+**/reports/
+**/runs/
+
+# Model weights and large archives
+*.ckpt
+*.npz
+*.pth
+*.pt
+*.tar.gz
+*.zip
+
+# Generated prediction/evaluation files
+**/class_accuracy.csv
+**/prediction*.csv
+**/validation_errors.csv
+
+# Local config/secrets
+*.local
+*.local.*
+*.env
