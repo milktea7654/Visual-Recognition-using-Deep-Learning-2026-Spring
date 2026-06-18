@@ -33,7 +33,6 @@ Thumbs.db
 .codex/
 
 # Separate repositories kept outside this HW repo
-final-project/
 final-project-submit/
 
 # Datasets and external dependencies
