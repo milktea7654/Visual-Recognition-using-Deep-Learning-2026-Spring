@@ -1,6 +1,18 @@
 # Image and Video Generation
 
-NYCU Image and Video Generation coursework repository.
+
+ **Note**
+- **Instructor**: 林彥宇
+- **Semester**: 2026 Spring
+
+## Homework
+
+| Homework | Topic 
+|----------|-------
+| Homework 1 | Image classification |
+| Homework 2 | Digit Detection |
+| Homework 3 | Instance Segmentation |
+| Homework 4 | Image Restoration |
 
 ## Repository Structure
 
@@ -14,20 +26,3 @@ NYCU Image and Video Generation coursework repository.
 ├── .gitignore
 └── .gitmodules
 ```
-
-## Submodules
-
-Each lab and the final project is managed as an independent git repository and linked here as a submodule.
-
-```bash
-git submodule update --init --recursive
-```
-
-## Folder Convention
-
-- `README.md`: task overview, setup, commands, and submission notes.
-- `requirements.txt`: Python dependencies.
-- `assets/`: README images and visual results.
-- `docs/`: assignment PDFs, result summaries, and written notes.
-- `data/`: local datasets.
-- `output/`, `outputs/`, `results/`: generated files, logs, and checkpoints.
